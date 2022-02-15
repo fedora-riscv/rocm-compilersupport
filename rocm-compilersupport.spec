@@ -58,7 +58,7 @@ The API is documented in the header file:
 
 #FIXME Disable some tests with unhelpful errors, possibly a bug in the test:
 sed -i -e "/compile_test/d" \
-	-e "/compile_minimal_test/d" \
+    -e "/compile_minimal_test/d" \
     -e "/compile_device_libs_test/d" \
     -e "/compile_source_with_device_libs_to_bc_test/d" \
     lib/comgr/test/CMakeLists.txt
