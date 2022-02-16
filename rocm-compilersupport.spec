@@ -56,7 +56,7 @@ The API is documented in the header file:
 %prep
 %autosetup -p1 -n %{upstreamname}-rocm-%{version}
 
-#FIXME Disable some tests with unhelpful errors, possibly a bug in the test:
+#These tests rely on features not present in upstream llvm:
 sed -i -e "/compile_test/d" \
     -e "/compile_minimal_test/d" \
     -e "/compile_device_libs_test/d" \
