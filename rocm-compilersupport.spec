@@ -2,7 +2,7 @@
 
 Name:           rocm-compilersupport
 Version:        5.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
 Url:            https://github.com/RadeonOpenCompute/ROCm-CompilerSupport
@@ -17,11 +17,6 @@ Patch0:         0001-Link-libclang-dynamically.patch
 
 #https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/pull/39
 Patch1:         0001-Fix-cmake-file-location.patch
-
-#Patches to fix building with LLVM 13:
-# Just reverts of upstream patches (upstream targets llvm 14)
-Patch101:       0001-Revert-TargetRegistry.h-now-lives-in-MC.patch
-Patch102:       0002-Revert-Changes-required-for-recent-merge-from-trunk.patch
 
 BuildRequires:  cmake
 BuildRequires:  clang-devel
@@ -88,6 +83,9 @@ sed -i -e "/compile_test/d" \
 %{_libdir}/cmake/amd_comgr
 
 %changelog
+* Tue Mar 29 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.0.0-2
+- Drop patches to build against LLVM 13, to prep for llvm 14 update
+
 * Fri Feb 11 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.0.0-1
 - Update to 5.0.0
 
