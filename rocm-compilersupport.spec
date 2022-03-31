@@ -18,8 +18,8 @@ Patch0:         0001-Link-libclang-dynamically.patch
 #https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/pull/39
 Patch1:         0001-Fix-cmake-file-location.patch
 
-#Fix build against LLVM 14:
-Patch100:       0001-Revert-Changes-required-for-https-reviews.llvm.org-D.patch
+#Fix build against LLVM 14, cherry-picked from amd-stg-open branch:
+Patch100:       0001-COMGR-changes-needed-for-https-github.com-llvm-llvm-.patch
 
 BuildRequires:  cmake
 BuildRequires:  clang-devel >= 14.0.0
@@ -76,6 +76,7 @@ sed -i -e "/compile_test/d" \
 %doc lib/comgr/README.md
 %{_libdir}/libamd_comgr.so.2{,.*}
 #Files already included:
+%exclude %{_docdir}/amd_comgr/comgr/LICENSE.txt
 %exclude %{_datadir}/amd_comgr/LICENSE.txt
 %exclude %{_datadir}/amd_comgr/NOTICES.txt
 %exclude %{_datadir}/amd_comgr/README.md
@@ -87,7 +88,7 @@ sed -i -e "/compile_test/d" \
 
 %changelog
 * Tue Mar 29 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.1.0-1
-- Drop patches to build against LLVM 13, to prep for llvm 14 update
+- Update to 5.1.0
 
 * Fri Feb 11 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.0.0-1
 - Update to 5.0.0
