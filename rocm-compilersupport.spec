@@ -1,8 +1,8 @@
 %global upstreamname ROCm-CompilerSupport
 
 Name:           rocm-compilersupport
-Version:        5.0.0
-Release:        2%{?dist}
+Version:        5.1.0
+Release:        1%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
 Url:            https://github.com/RadeonOpenCompute/ROCm-CompilerSupport
@@ -19,10 +19,10 @@ Patch0:         0001-Link-libclang-dynamically.patch
 Patch1:         0001-Fix-cmake-file-location.patch
 
 BuildRequires:  cmake
-BuildRequires:  clang-devel
+BuildRequires:  clang-devel >= 14.0.0
 BuildRequires:  lld-devel
-BuildRequires:  llvm-devel
-BuildRequires:  rocm-device-libs
+BuildRequires:  llvm-devel >= 14.0.0
+BuildRequires:  rocm-device-libs >= %(echo %{version} | sed 's/\.[0-9]*$/.0/')
 BuildRequires:  zlib-devel
 
 #Only the following architectures are supported:
@@ -59,7 +59,7 @@ sed -i -e "/compile_test/d" \
     lib/comgr/test/CMakeLists.txt
 
 %build
-%cmake lib/comgr -DCMAKE_BUILD_TYPE="RELEASE" -DBUILD_TESTING=ON
+%cmake -S lib/comgr -DCMAKE_BUILD_TYPE="RELEASE" -DBUILD_TESTING=ON
 %cmake_build
 
 %check
@@ -83,7 +83,7 @@ sed -i -e "/compile_test/d" \
 %{_libdir}/cmake/amd_comgr
 
 %changelog
-* Tue Mar 29 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.0.0-2
+* Tue Mar 29 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.1.0-1
 - Drop patches to build against LLVM 13, to prep for llvm 14 update
 
 * Fri Feb 11 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.0.0-1
