@@ -1,0 +1,38 @@
+From 63c943a9c6e3eda2a34b7c693d96bfdaaec4b389 Mon Sep 17 00:00:00 2001
+From: Mystro256 <alexjnewt@hotmail.com>
+Date: Thu, 31 Mar 2022 12:40:56 -0400
+Subject: [PATCH] Revert "Changes required for
+ https://reviews.llvm.org/D116011"
+
+This reverts commit a75326c7204e9c91bfcfd0fb701b9f2ad1ec234d.
+---
+ lib/comgr/src/comgr-compiler.cpp | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/lib/comgr/src/comgr-compiler.cpp b/lib/comgr/src/comgr-compiler.cpp
+index 6c2cba2..dc698fb 100644
+--- a/lib/comgr/src/comgr-compiler.cpp
++++ b/lib/comgr/src/comgr-compiler.cpp
+@@ -680,9 +680,6 @@ AMDGPUCompiler::executeInProcessDriver(ArrayRef<const char *> Args) {
+       }
+       std::unique_ptr<CompilerInstance> Clang(new CompilerInstance());
+       Clang->setVerboseOutputStream(LogS);
+-      if (!Argv.back()) {
+-        Argv.pop_back();
+-      }
+       if (!CompilerInvocation::CreateFromArgs(Clang->getInvocation(), Argv,
+                                               Diags)) {
+         return AMD_COMGR_STATUS_ERROR;
+@@ -702,9 +699,6 @@ AMDGPUCompiler::executeInProcessDriver(ArrayRef<const char *> Args) {
+         logArgv(LogS, "clang", Argv);
+       }
+       Argv.erase(Argv.begin() + 1);
+-      if (!Argv.back()) {
+-        Argv.pop_back();
+-      }
+       AssemblerInvocation Asm;
+       if (!AssemblerInvocation::createFromArgs(Asm, Argv, Diags)) {
+         return AMD_COMGR_STATUS_ERROR;
+-- 
+2.35.1
+

@@ -18,6 +18,9 @@ Patch0:         0001-Link-libclang-dynamically.patch
 #https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/pull/39
 Patch1:         0001-Fix-cmake-file-location.patch
 
+#Fix build against LLVM 14:
+Patch100:       0001-Revert-Changes-required-for-https-reviews.llvm.org-D.patch
+
 BuildRequires:  cmake
 BuildRequires:  clang-devel >= 14.0.0
 BuildRequires:  lld-devel
