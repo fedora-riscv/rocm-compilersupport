@@ -30,8 +30,8 @@ BuildRequires:  llvm-devel
 BuildRequires:  rocm-device-libs
 BuildRequires:  zlib-devel
 
-#Only the following architectures are supported:
-ExclusiveArch:  x86_64 aarch64
+#Only the following architectures are useful for ROCm packages:
+ExclusiveArch:  x86_64 aarch64 ppc64le
 
 %description
 This package currently contains one library, the Code Object Manager (Comgr)
@@ -90,6 +90,7 @@ sed -i -e "/compile_test/d" \
 %changelog
 * Thu May 26 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.0.2-1
 - Update to 5.0.2
+- Enable ppc64le
 
 * Fri Feb 11 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.0.0-1
 - Update to 5.0.0
