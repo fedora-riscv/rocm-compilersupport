@@ -2,7 +2,7 @@
 
 Name:           rocm-compilersupport
 Version:        5.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
 Url:            https://github.com/RadeonOpenCompute/ROCm-CompilerSupport
@@ -28,8 +28,8 @@ BuildRequires:  llvm-devel >= 14.0.0
 BuildRequires:  rocm-device-libs >= %(echo %{version} | sed 's/\.[0-9]*$/.0/')
 BuildRequires:  zlib-devel
 
-#Only the following architectures are supported:
-ExclusiveArch:  x86_64 aarch64
+#Only the following architectures are useful for ROCm packages:
+ExclusiveArch:  x86_64 aarch64 ppc64le
 
 %description
 This package currently contains one library, the Code Object Manager (Comgr)
@@ -87,6 +87,9 @@ sed -i -e "/compile_test/d" \
 %{_libdir}/cmake/amd_comgr
 
 %changelog
+* Tue Apr 05 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.1.0-2
+- Enable ppc64le
+
 * Tue Mar 29 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.1.0-1
 - Update to 5.1.0
 
