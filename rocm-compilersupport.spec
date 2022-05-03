@@ -9,16 +9,14 @@ Url:            https://github.com/RadeonOpenCompute/ROCm-CompilerSupport
 License:        NCSA
 Source0:        https://github.com/RadeonOpenCompute/%{upstreamname}/archive/refs/tags/rocm-%{version}.tar.gz#/%{upstreamname}-%{version}.tar.gz
 
-#Patch to use dynamic linking for clang
-# Upstream is ok with dynamic linking, but my patch isn't currently upstreamable
-# since upstream wants to still allow static linking:
-#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/issues/40
-Patch0:         0001-Link-libclang-dynamically.patch
+#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/5495595234e8fb7b1715429cfa41fe6d9c0e710c
+Patch0:         0001-Detect-if-clang-is-static-or-shared.patch
 
-#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/pull/39
+#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/75c1055f9840f3089b3d744e44faaa4a2fcd8803
 Patch1:         0001-Fix-cmake-file-location.patch
 
 #Fix build against LLVM 14, cherry-picked from amd-stg-open branch:
+#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/616915650763f5d49ae66b4c11556a47821b9204
 Patch100:       0001-COMGR-changes-needed-for-https-github.com-llvm-llvm-.patch
 
 BuildRequires:  cmake
