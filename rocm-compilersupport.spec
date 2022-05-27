@@ -1,7 +1,7 @@
 %global upstreamname ROCm-CompilerSupport
 
 Name:           rocm-compilersupport
-Version:        5.0.0
+Version:        5.0.2
 Release:        1%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
@@ -88,6 +88,9 @@ sed -i -e "/compile_test/d" \
 %{_libdir}/cmake/amd_comgr
 
 %changelog
+* Thu May 26 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.0.2-1
+- Update to 5.0.2
+
 * Fri Feb 11 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.0.0-1
 - Update to 5.0.0
 
