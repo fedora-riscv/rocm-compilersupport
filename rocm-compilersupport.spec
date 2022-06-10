@@ -1,8 +1,11 @@
 %global upstreamname ROCm-CompilerSupport
+%global rocm_release 5.1
+%global rocm_patch 0
+%global rocm_version %{rocm_release}.%{rocm_patch}
 
 Name:           rocm-compilersupport
-Version:        5.1.0
-Release:        2%{?dist}
+Version:        %{rocm_version}
+Release:        3%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
 Url:            https://github.com/RadeonOpenCompute/ROCm-CompilerSupport
@@ -34,6 +37,7 @@ This package currently contains one library, the Code Object Manager (Comgr)
 
 %package -n rocm-comgr
 Summary:        AMD ROCm LLVM Code Object Manager
+Provides:       comgr(rocm) = %{rocm_release}
 
 %description -n rocm-comgr
 The AMD Code Object Manager (Comgr) is a shared library which provides
@@ -85,6 +89,9 @@ sed -i -e "/compile_test/d" \
 %{_libdir}/cmake/amd_comgr
 
 %changelog
+* Fri Jun 10 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.1.0-3
+- Add comgr(rocm) provide
+
 * Tue Apr 05 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.1.0-2
 - Enable ppc64le
 
