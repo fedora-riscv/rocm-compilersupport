@@ -1,11 +1,11 @@
 %global upstreamname ROCm-CompilerSupport
-%global rocm_release 5.1
+%global rocm_release 5.2
 %global rocm_patch 0
 %global rocm_version %{rocm_release}.%{rocm_patch}
 
 Name:           rocm-compilersupport
 Version:        %{rocm_version}
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
 Url:            https://github.com/RadeonOpenCompute/ROCm-CompilerSupport
@@ -15,12 +15,9 @@ Source0:        https://github.com/RadeonOpenCompute/%{upstreamname}/archive/ref
 #https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/5495595234e8fb7b1715429cfa41fe6d9c0e710c
 Patch0:         0001-Detect-if-clang-is-static-or-shared.patch
 
-#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/75c1055f9840f3089b3d744e44faaa4a2fcd8803
-Patch1:         0001-Fix-cmake-file-location.patch
-
-#Fix build against LLVM 14, cherry-picked from amd-stg-open branch:
-#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/616915650763f5d49ae66b4c11556a47821b9204
-Patch100:       0001-COMGR-changes-needed-for-https-github.com-llvm-llvm-.patch
+#Revert one patch to avoid compilation issue:
+# gfx1036 defines are not present in llvm 14 (should be in 15)
+Patch100:       0001-Revert-Add-gfx1036.patch
 
 BuildRequires:  cmake
 BuildRequires:  clang-devel >= 14.0.0
@@ -89,6 +86,9 @@ sed -i -e "/compile_test/d" \
 %{_libdir}/cmake/amd_comgr
 
 %changelog
+* Sun Jul 03 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.2.0-1
+- Update to 5.2.0
+
 * Fri Jun 10 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.1.0-3
 - Add comgr(rocm) provide
 
