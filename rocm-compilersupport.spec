@@ -5,7 +5,7 @@
 
 Name:           rocm-compilersupport
 Version:        %{rocm_version}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
 Url:            https://github.com/RadeonOpenCompute/ROCm-CompilerSupport
@@ -15,14 +15,20 @@ Source0:        https://github.com/RadeonOpenCompute/%{upstreamname}/archive/ref
 #https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/5495595234e8fb7b1715429cfa41fe6d9c0e710c
 Patch0:         0001-Detect-if-clang-is-static-or-shared.patch
 
-#Revert one patch to avoid compilation issue:
-# gfx1036 defines are not present in llvm 14 (should be in 15)
-Patch100:       0001-Revert-Add-gfx1036.patch
+#LLVM 15 patches cherry-picked from upstream's amd-stg-open branch:
+#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/47fe512bd69dfb43a701ab3747cd7475c30b78fc
+Patch1:         0001-Comgr-changes-needed-for-https-github.com-llvm-llvm-.patch
+#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/d2318e14dd6f9172a392d40521d7e38c5e0de9e7
+Patch2:         0002-Cleanup-after-https-reviews.llvm.org-D120433.patch
+#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/47ce7412513149525760fe30e0a6d8b2470cbbc9
+Patch3:         0003-Changes-required-for-the-following-llvm-commit.patch
+#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/ec7df87560359d70559c214f102cce02358b7369
+Patch4:         0004-remove-references-to-GNU-for-compression-type-per-up.patch
 
 BuildRequires:  cmake
-BuildRequires:  clang-devel >= 14.0.0
+BuildRequires:  clang-devel >= 15.0.0
 BuildRequires:  lld-devel
-BuildRequires:  llvm-devel >= 14.0.0
+BuildRequires:  llvm-devel >= 15.0.0
 BuildRequires:  rocm-device-libs >= %(echo %{version} | sed 's/\.[0-9]*$/.0/')
 BuildRequires:  zlib-devel
 
@@ -94,6 +100,9 @@ sed -i 's/lib\(\/clang\)/%{_lib}\1/' lib/comgr/src/comgr-compiler.cpp
 %{_libdir}/cmake/amd_comgr
 
 %changelog
+* Mon Sep 19 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.2.0-3
+- Rebuilt against LLVM 15
+
 * Sat Jul 23 2022 Fedora Release Engineering <releng@fedoraproject.org> - 5.2.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 

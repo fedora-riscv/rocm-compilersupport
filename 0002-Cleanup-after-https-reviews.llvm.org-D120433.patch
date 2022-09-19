@@ -1,0 +1,61 @@
+From ee0230ccbb8a9027734fd543818cd6e124c4bf3e Mon Sep 17 00:00:00 2001
+From: Scott Linder <Scott.Linder@amd.com>
+Date: Fri, 25 Feb 2022 18:57:29 +0000
+Subject: [PATCH 2/4] Cleanup after https://reviews.llvm.org/D120433
+
+The implementations of the constructor/destructor for Symbolizer depend
+on the full definition of SymbolizableObjectFile, which is no longer
+included upstream via just ObjectFile.h
+
+Move the implementations into the .cpp file and include the
+SymbolizableObjectFile.h header directly.
+
+Change-Id: I5cd869a472e847dc02e472b3a150199d9f3e813a
+---
+ lib/comgr/src/comgr-symbolizer.cpp | 7 +++++++
+ lib/comgr/src/comgr-symbolizer.h   | 4 ++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/lib/comgr/src/comgr-symbolizer.cpp b/lib/comgr/src/comgr-symbolizer.cpp
+index bbbfbd4..a24dc26 100644
+--- a/lib/comgr/src/comgr-symbolizer.cpp
++++ b/lib/comgr/src/comgr-symbolizer.cpp
+@@ -36,6 +36,8 @@
+  *
+  ******************************************************************************/
+ 
++
++#include "llvm/DebugInfo/Symbolize/SymbolizableObjectFile.h"
+ #include "comgr-symbolizer.h"
+ #include "llvm/BinaryFormat/Magic.h"
+ #include "llvm/Support/Error.h"
+@@ -55,6 +57,11 @@ static llvm::symbolize::PrinterConfig getDefaultPrinterConfig() {
+   return Config;
+ }
+ 
++Symbolizer::Symbolizer(std::unique_ptr<ObjectFile> &&CodeObject,
++                       PrintSymbolCallback PrintSymbol)
++    : CodeObject(std::move(CodeObject)), PrintSymbol(PrintSymbol) {}
++Symbolizer::~Symbolizer() = default;
++
+ amd_comgr_status_t
+ Symbolizer::create(DataObject *CodeObjectP, PrintSymbolCallback PrintSymbol,
+                    amd_comgr_symbolizer_info_t *SymbolizeInfo) {
+diff --git a/lib/comgr/src/comgr-symbolizer.h b/lib/comgr/src/comgr-symbolizer.h
+index 3777790..cecaff0 100644
+--- a/lib/comgr/src/comgr-symbolizer.h
++++ b/lib/comgr/src/comgr-symbolizer.h
+@@ -54,8 +54,8 @@ typedef void (*PrintSymbolCallback)(const char *, void *);
+ 
+ struct Symbolizer {
+   Symbolizer(std::unique_ptr<ObjectFile> &&CodeObject,
+-             PrintSymbolCallback PrintSymbol)
+-      : CodeObject(std::move(CodeObject)), PrintSymbol(PrintSymbol) {}
++             PrintSymbolCallback PrintSymbol);
++  ~Symbolizer();
+ 
+   static amd_comgr_symbolizer_info_t convert(Symbolizer *SymbolizerObj) {
+     amd_comgr_symbolizer_info_t Handle = {
+-- 
+2.37.2
+
