@@ -5,7 +5,7 @@
 
 Name:           rocm-compilersupport
 Version:        %{rocm_version}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
 Url:            https://github.com/RadeonOpenCompute/ROCm-CompilerSupport
@@ -60,6 +60,14 @@ sed -i -e "/compile_test/d" \
     -e "/compile_source_with_device_libs_to_bc_test/d" \
     lib/comgr/test/CMakeLists.txt
 
+##Fix issue wit HIP, where compilation flags are incorrect, see issue:
+#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/issues/49
+#Remove redundant includes:
+sed -i '/Args.push_back(HIPIncludePath/,+1d' lib/comgr/src/comgr-compiler.cpp
+sed -i '/Args.push_back(ROCMIncludePath/,+1d' lib/comgr/src/comgr-compiler.cpp
+#Source hard codes the libdir too:
+sed -i 's/lib\(\/clang\)/%{_lib}\1/' lib/comgr/src/comgr-compiler.cpp
+
 %build
 %cmake -S lib/comgr -DCMAKE_BUILD_TYPE="RELEASE" -DBUILD_TESTING=ON
 %cmake_build
@@ -86,6 +94,9 @@ sed -i -e "/compile_test/d" \
 %{_libdir}/cmake/amd_comgr
 
 %changelog
+* Mon Sep 26 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.2.0-2
+- Fix HIP related issue
+
 * Sun Jul 03 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.2.0-1
 - Update to 5.2.0
 
