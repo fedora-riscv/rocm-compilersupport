@@ -79,15 +79,16 @@ sed -i 's/lib\(\/clang\)/%{_lib}\1/' lib/comgr/src/comgr-compiler.cpp
 %doc lib/comgr/README.md
 %{_libdir}/libamd_comgr.so.2{,.*}
 #Files already included:
-%exclude %{_docdir}/amd_comgr/comgr/LICENSE.txt
-%exclude %{_datadir}/amd_comgr/LICENSE.txt
-%exclude %{_datadir}/amd_comgr/NOTICES.txt
-%exclude %{_datadir}/amd_comgr/README.md
+%exclude %{_docdir}/amd_comgr/LICENSE.txt
+%exclude %{_docdir}/amd_comgr/NOTICES.txt
+%exclude %{_docdir}/amd_comgr/README.md
 
 %files -n rocm-comgr-devel
-%{_includedir}/amd_comgr.h
+%{_includedir}/amd_comgr/amd_comgr.h
 %{_libdir}/libamd_comgr.so
 %{_libdir}/cmake/amd_comgr
+#This header are deprecated and will be removed soon:
+%{_includedir}/amd_comgr.h
 
 %changelog
 * Tue Oct 04 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.3.0-1
