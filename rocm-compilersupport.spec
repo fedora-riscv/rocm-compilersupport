@@ -1,7 +1,10 @@
 %global upstreamname ROCm-CompilerSupport
+%global rocm_release 5.2
+%global rocm_patch 3
+%global rocm_version %{rocm_release}.%{rocm_patch}
 
 Name:           rocm-compilersupport
-Version:        5.0.2
+Version:        %{rocm_version}
 Release:        1%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
@@ -12,19 +15,15 @@ Source0:        https://github.com/RadeonOpenCompute/%{upstreamname}/archive/ref
 #https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/5495595234e8fb7b1715429cfa41fe6d9c0e710c
 Patch0:         0001-Detect-if-clang-is-static-or-shared.patch
 
-#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/commit/75c1055f9840f3089b3d744e44faaa4a2fcd8803
-Patch1:         0001-Fix-cmake-file-location.patch
-
-#Patches to fix building with LLVM 13:
-# Just reverts of upstream patches (upstream targets llvm 14)
-Patch101:       0001-Revert-TargetRegistry.h-now-lives-in-MC.patch
-Patch102:       0002-Revert-Changes-required-for-recent-merge-from-trunk.patch
+#Revert one patch to avoid compilation issue:
+# gfx1036 defines are not present in llvm 14 (should be in 15)
+Patch100:       0001-Revert-Add-gfx1036.patch
 
 BuildRequires:  cmake
-BuildRequires:  clang-devel
+BuildRequires:  clang-devel >= 14.0.0
 BuildRequires:  lld-devel
-BuildRequires:  llvm-devel
-BuildRequires:  rocm-device-libs
+BuildRequires:  llvm-devel >= 14.0.0
+BuildRequires:  rocm-device-libs >= %(echo %{version} | sed 's/\.[0-9]*$/.0/')
 BuildRequires:  zlib-devel
 
 #Only the following architectures are useful for ROCm packages:
@@ -35,6 +34,7 @@ This package currently contains one library, the Code Object Manager (Comgr)
 
 %package -n rocm-comgr
 Summary:        AMD ROCm LLVM Code Object Manager
+Provides:       comgr(rocm) = %{rocm_release}
 
 %description -n rocm-comgr
 The AMD Code Object Manager (Comgr) is a shared library which provides
@@ -60,8 +60,16 @@ sed -i -e "/compile_test/d" \
     -e "/compile_source_with_device_libs_to_bc_test/d" \
     lib/comgr/test/CMakeLists.txt
 
+##Fix issue wit HIP, where compilation flags are incorrect, see issue:
+#https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/issues/49
+#Remove redundant includes:
+sed -i '/Args.push_back(HIPIncludePath/,+1d' lib/comgr/src/comgr-compiler.cpp
+sed -i '/Args.push_back(ROCMIncludePath/,+1d' lib/comgr/src/comgr-compiler.cpp
+#Source hard codes the libdir too:
+sed -i 's/lib\(\/clang\)/%{_lib}\1/' lib/comgr/src/comgr-compiler.cpp
+
 %build
-%cmake lib/comgr -DCMAKE_BUILD_TYPE="RELEASE" -DBUILD_TESTING=ON
+%cmake -S lib/comgr -DCMAKE_BUILD_TYPE="RELEASE" -DBUILD_TESTING=ON
 %cmake_build
 
 %check
@@ -75,6 +83,7 @@ sed -i -e "/compile_test/d" \
 %doc lib/comgr/README.md
 %{_libdir}/libamd_comgr.so.2{,.*}
 #Files already included:
+%exclude %{_docdir}/amd_comgr/comgr/LICENSE.txt
 %exclude %{_datadir}/amd_comgr/LICENSE.txt
 %exclude %{_datadir}/amd_comgr/NOTICES.txt
 %exclude %{_datadir}/amd_comgr/README.md
@@ -85,6 +94,10 @@ sed -i -e "/compile_test/d" \
 %{_libdir}/cmake/amd_comgr
 
 %changelog
+* Fri Dec 2 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.2.3-1
+- Update to ROCm version 5.2.3
+- Synchronize with spec file from fedora 36
+
 * Thu May 26 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.0.2-1
 - Update to 5.0.2
 - Enable ppc64le
