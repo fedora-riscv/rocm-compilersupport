@@ -5,7 +5,7 @@
 
 Name:           rocm-compilersupport
 Version:        %{rocm_version}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
 Url:            https://github.com/RadeonOpenCompute/ROCm-CompilerSupport
@@ -88,6 +88,9 @@ sed -i 's/lib\(\/clang\)/%{_lib}\1/' lib/comgr/src/comgr-compiler.cpp
 %{_includedir}/amd_comgr.h
 
 %changelog
+* Fri Jan 13 2023 Nikita Popov <npopov@redhat.com> - 5.4.1-2
+- Rebuild against Clang 15.0.7
+
 * Sun Dec 18 2022 Jeremy Newton <alexjnewt at hotmail dot com> - 5.4.1-1
 - Update to 5.4.1
 
