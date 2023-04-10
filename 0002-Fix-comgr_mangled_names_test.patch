@@ -1,0 +1,45 @@
+From 4a36e8de5bab8bad35e5cbf8799fdf0cb922167b Mon Sep 17 00:00:00 2001
+From: Jeremy Newton <Jeremy.Newton@amd.com>
+Date: Mon, 10 Apr 2023 11:06:31 -0400
+Subject: [PATCH 2/4] Fix comgr_mangled_names_test
+
+Previous patch to fix test against upstream llvm causes a new test to
+fail due to the addition of "source3" in the test output.
+---
+ lib/comgr/test/mangled_names_test.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/lib/comgr/test/mangled_names_test.c b/lib/comgr/test/mangled_names_test.c
+index 352ad31..96c57ad 100644
+--- a/lib/comgr/test/mangled_names_test.c
++++ b/lib/comgr/test/mangled_names_test.c
+@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
+     exit(1);
+   }
+ 
+-  const char *bcNames[] = {"source1", "source2"};
++  const char *bcNames[] = {"source3", "source1"};
+ 
+   for (size_t I = 0; I < numNames; ++I) {
+     size_t Size;
+@@ -249,14 +249,14 @@ int main(int argc, char *argv[]) {
+ 
+   Status = amd_comgr_populate_mangled_names(DataExec, &numNames);
+ 
+-  if (numNames != 4) {
++  if (numNames != 6) {
+     printf("amd_populate_mangled_names Failed: "
+-           "produced %zu executable names (expected 4)\n",
++           "produced %zu executable names (expected 6)\n",
+            numNames);
+     exit(1);
+   }
+ 
+-  const char *execNames[] = {"source1", "source1.kd", "source2", "source2.kd"};
++  const char *execNames[] = {"source3", "source3.kd", "source1", "source1.kd", "source2", "source2.kd"};
+ 
+   for (size_t I = 0; I < numNames; ++I) {
+     size_t Size;
+-- 
+2.39.2
+

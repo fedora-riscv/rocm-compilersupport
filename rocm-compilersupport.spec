@@ -16,6 +16,10 @@ License:        NCSA
 # bleeding edge LLVM branch. My fork is a snapshot with bugfixes backported:
 Source0:        https://github.com/Mystro256/%{upstreamname}/archive/refs/tags/%{version}.tar.gz#/%{upstreamname}-%{version}.tar.gz
 
+Patch0:         0001-Test-reporting-error.patch
+Patch1:	        0002-Fix-comgr_mangled_names_test.patch
+Patch2:         0003-Skip-device-libs-test-errors.patch
+
 BuildRequires:  cmake
 BuildRequires:  clang-devel >= %{llvm_maj_ver}
 BuildRequires:  clang(major) = %{llvm_maj_ver}
@@ -32,7 +36,7 @@ This package currently contains one library, the Code Object Manager (Comgr)
 
 %package -n rocm-comgr
 Summary:        AMD ROCm LLVM Code Object Manager
-Provides:       comgr(rocm) = %{rocm_release}
+Provides:       comgr(rocm) = %{llvm_maj_ver}
 
 %description -n rocm-comgr
 The AMD Code Object Manager (Comgr) is a shared library which provides
