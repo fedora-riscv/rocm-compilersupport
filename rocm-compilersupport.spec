@@ -1,22 +1,31 @@
+# The package follows LLVM's major version, but API version is still important:
+%global comgr_maj_api_ver 2
+%global comgr_full_api_ver %{comgr_maj_api_ver}.4.0
+# LLVM information:
+%global llvm_maj_ver 15
+# If you bump LLVM, please reset bugfix_version to 0; I fork upstream sources,
+# but I prepare the initial *.0 tag long before Fedora/EL picks up new LLVM.
+# An LLVM update will require uploading new sources, contact mystro256 if FTBFS.
+%global bugfix_version 1
 %global upstreamname ROCm-CompilerSupport
-%global rocm_release 5.4
-%global rocm_patch 1
-%global rocm_version %{rocm_release}.%{rocm_patch}
 
 Name:           rocm-compilersupport
-Version:        %{rocm_version}
-Release:        2%{?dist}
+Version:        %{llvm_maj_ver}.%{bugfix_version}
+Release:        1%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
 Url:            https://github.com/RadeonOpenCompute/ROCm-CompilerSupport
 License:        NCSA
-Source0:        https://github.com/RadeonOpenCompute/%{upstreamname}/archive/refs/tags/rocm-%{version}.tar.gz#/%{upstreamname}-%{version}.tar.gz
+# I fork upstream sources because they don't target stable LLVM, but rather the
+# bleeding edge LLVM branch. My fork is a snapshot with bugfixes backported:
+Source0:        https://github.com/Mystro256/%{upstreamname}/archive/refs/tags/%{version}.tar.gz#/%{upstreamname}-%{version}.tar.gz
 
 BuildRequires:  cmake
-BuildRequires:  clang-devel >= 15.0.0
+BuildRequires:  clang-devel >= %{llvm_maj_ver}
+BuildRequires:  clang(major) = %{llvm_maj_ver}
 BuildRequires:  lld-devel
-BuildRequires:  llvm-devel >= 15.0.0
-BuildRequires:  rocm-device-libs >= %(echo %{version} | sed 's/\.[0-9]*$/.0/')
+BuildRequires:  llvm-devel(major) = %{llvm_maj_ver}
+BuildRequires:  rocm-device-libs >= %{llvm_maj_ver}
 BuildRequires:  zlib-devel
 
 #Only the following architectures are useful for ROCm packages:
@@ -27,7 +36,8 @@ This package currently contains one library, the Code Object Manager (Comgr)
 
 %package -n rocm-comgr
 Summary:        AMD ROCm LLVM Code Object Manager
-Provides:       comgr(rocm) = %{rocm_release}
+Provides:       comgr(major) = %{comgr_maj_api_ver}
+Provides:       rocm-comgr = %{comgr_full_api_ver}-%{release}
 
 %description -n rocm-comgr
 The AMD Code Object Manager (Comgr) is a shared library which provides
@@ -44,14 +54,7 @@ The API is documented in the header file:
 "%{_includedir}/amd_comgr.h"
 
 %prep
-%autosetup -p1 -n %{upstreamname}-rocm-%{version}
-
-#These tests rely on features not present in upstream llvm:
-sed -i -e "/compile_test/d" \
-    -e "/compile_minimal_test/d" \
-    -e "/compile_device_libs_test/d" \
-    -e "/compile_source_with_device_libs_to_bc_test/d" \
-    lib/comgr/test/CMakeLists.txt
+%autosetup -p1 -n %{upstreamname}-%{version}
 
 ##Fix issue wit HIP, where compilation flags are incorrect, see issue:
 #https://github.com/RadeonOpenCompute/ROCm-CompilerSupport/issues/49
@@ -74,7 +77,8 @@ sed -i 's/lib\(\/clang\)/%{_lib}\1/' lib/comgr/src/comgr-compiler.cpp
 %files -n rocm-comgr
 %license LICENSE.txt lib/comgr/NOTICES.txt
 %doc lib/comgr/README.md
-%{_libdir}/libamd_comgr.so.2{,.*}
+%{_libdir}/libamd_comgr.so.%{comgr_full_api_ver}
+%{_libdir}/libamd_comgr.so.%{comgr_maj_api_ver}
 #Files already included:
 %exclude %{_docdir}/amd_comgr/LICENSE.txt
 %exclude %{_docdir}/amd_comgr/NOTICES.txt
@@ -88,6 +92,9 @@ sed -i 's/lib\(\/clang\)/%{_lib}\1/' lib/comgr/src/comgr-compiler.cpp
 %{_includedir}/amd_comgr.h
 
 %changelog
+* Fri Apr 21 2023 Jeremy Newton <alexjnewt at hotmail dot com> - 15.1-1
+- Update to 15.1 (forked sources for Fedora)
+
 * Fri Jan 13 2023 Nikita Popov <npopov@redhat.com> - 5.4.1-2
 - Rebuild against Clang 15.0.7
 
