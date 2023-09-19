@@ -11,7 +11,7 @@
 
 Name:           rocm-compilersupport
 Version:        %{llvm_maj_ver}.%{bugfix_version}
-Release:        3%{?dist}
+Release:        3.rv64%{?dist}
 Summary:        Various AMD ROCm LLVM related services
 
 Url:            https://github.com/RadeonOpenCompute/ROCm-CompilerSupport
@@ -29,7 +29,7 @@ BuildRequires:  rocm-device-libs >= %{llvm_maj_ver}
 BuildRequires:  zlib-devel
 
 #Only the following architectures are useful for ROCm packages:
-ExclusiveArch:  x86_64 aarch64 ppc64le
+ExclusiveArch:  x86_64 aarch64 ppc64le riscv64
 
 %description
 This package currently contains one library, the Code Object Manager (Comgr)
@@ -92,6 +92,9 @@ sed -i 's/lib\(\/clang\)/%{_lib}\1/' lib/comgr/src/comgr-compiler.cpp
 %{_includedir}/amd_comgr.h
 
 %changelog
+* Tue Sep 19 2023 Zhengyu He <hezhy472013@gmail.com> - 16.2-3.rv64
+- Add support for riscv64
+
 * Tue Aug 08 2023 Jeremy Newton <alexjnewt at hotmail dot com> - 16.2-3
 - Rebuild against rocm-device-libs 16.4
 
